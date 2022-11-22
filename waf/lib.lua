@@ -16,6 +16,15 @@ function get_client_ip()
     return CLIENT_IP
 end
 
+--Get the request method
+function get_request_method()
+    REQUEST_METHOD = ngx.var.request_method
+    if REQUEST_METHOD == nil then
+	REQUEST_METHOD = ""
+    end
+    return REQUEST_METHOD
+end
+
 --Get the client user agent
 function get_user_agent()
     USER_AGENT = ngx.var.http_user_agent
@@ -78,7 +87,7 @@ function waf_output()
     else
         ngx.header.content_type = "text/html"
         ngx.status = ngx.HTTP_FORBIDDEN
-        ngx.say(config_output_html)
+        --ngx.say(config_output_html)
         ngx.exit(ngx.status)
     end
 end

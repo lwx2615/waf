@@ -105,9 +105,9 @@ end
 function url_attack_check()
     if config_url_check == "on" then
         local URL_RULES = get_rule('url.rule')
-        local REQ_URI = ngx.var.request_uri
+        local REQ_URI = ngx.var.uri
         for _,rule in pairs(URL_RULES) do
-            if rule ~="" and rulematch(REQ_URI,rule,"jo") then
+            if rule ~="" and ngx.re.find(REQ_URI,rule,"jo") then
                 log_record('Deny_URL',REQ_URI,"-",rule)
                 if config_waf_enable == "on" then
                     waf_output()
@@ -175,3 +175,22 @@ function post_attack_check()
     return false
 end
 
+--deny request method
+function request_method_check()
+	if config_request_method == "on" then
+		local REQUSET_METHOD_RULES = get_rule('method.rule')  
+                local REQUEST_METHOD = get_request_method()
+                for _,rule in pairs(REQUSET_METHOD_RULES) do
+			if rule ~="" and rulematch(REQUEST_METHOD,rule,"jo") then
+			    return false
+			else
+                	    log_record('Deny_REQUEST_METHOD',REQUEST_METHOD,"-",rule)
+                	    if config_waf_enable == "on" then
+                	        waf_output()
+                	        return true
+                	    end
+                	end
+		end
+	end
+	return false
+end

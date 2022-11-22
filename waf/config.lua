@@ -3,7 +3,7 @@
 --waf status
 config_waf_enable = "on"
 --log dir
-config_log_dir = "/tmp"
+config_log_dir = "/home/lwx/log"
 --rule setting
 config_rule_dir = "/usr/local/openresty/nginx/conf/waf/rule-config"
 --enable/disable white url
@@ -16,6 +16,8 @@ config_black_ip_check = "on"
 config_url_check = "on"
 --enalbe/disable url args filtering
 config_url_args_check = "on"
+--enable/disable request method filteing
+config_request_method = "on"
 --enable/disable user agent filtering
 config_user_agent_check = "on"
 --enable/disable cookie deny filtering
@@ -27,19 +29,8 @@ config_cc_rate = "10/60"
 --enable/disable post filtering
 config_post_check = "on"
 --config waf output redirect/html
-config_waf_output = "html"
+config_waf_output = ""
 --if config_waf_output ,setting url
-config_waf_redirect_url = "https://www.unixhot.com"
-config_output_html=[[
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta http-equiv="Content-Language" content="zh-cn" />
-<title>OpsAny｜Web应用防火墙</title>
-</head>
-<body>
-<h1 align="center"> 欢迎白帽子进行授权安全测试，安全漏洞请联系QQ：57459267
-</body>
-</html>
-]]
+config_waf_redirect_url = "https://www.baidu.com" --"http://119.3.26.140:8080"
+config_output_html=[[]]
 
