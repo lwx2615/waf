@@ -13,7 +13,7 @@ function white_ip_check()
         local WHITE_IP = get_client_ip()
         if IP_WHITE_RULE ~= nil then
             for _,rule in pairs(IP_WHITE_RULE) do
-                if rule ~= "" and rulematch(WHITE_IP,rule,"jo") then
+                if rule ~= "" and rulematch(WHITE_IP,rule,"ijo") then
                     log_record('White_IP',ngx.var_request_uri,"_","_")
                     return true
                 end
@@ -29,10 +29,10 @@ function black_ip_check()
         local BLACK_IP = get_client_ip()
         if IP_BLACK_RULE ~= nil then
             for _,rule in pairs(IP_BLACK_RULE) do
-                if rule ~= "" and rulematch(BLACK_IP,rule,"jo") then
+                if rule ~= "" and rulematch(BLACK_IP,rule,"ijo") then
                     log_record('BlackList_IP',ngx.var_request_uri,"_","_")
                     if config_waf_enable == "on" then
-                        ngx.exit(403)
+                        ngx.exit(503)
                         return true
                     end
                 end
@@ -48,7 +48,7 @@ function white_url_check()
         local REQ_URI = ngx.var.request_uri
         if URL_WHITE_RULES ~= nil then
             for _,rule in pairs(URL_WHITE_RULES) do
-                if rule ~= "" and rulematch(REQ_URI,rule,"jo") then
+                if rule ~= "" and rulematch(REQ_URI,rule,"ijo") then
                     return true
                 end
             end
@@ -62,14 +62,14 @@ function cc_attack_check()
         local ATTACK_URI=ngx.var.uri
         local CC_TOKEN = get_client_ip()..ATTACK_URI
         local limit = ngx.shared.limit
-        CCcount=tonumber(string.match(config_cc_rate,'(.*)/'))
-        CCseconds=tonumber(string.match(config_cc_rate,'/(.*)'))
+        local CCcount=tonumber(string.match(config_cc_rate,'(.*)/'))
+        local CCseconds=tonumber(string.match(config_cc_rate,'/(.*)'))
         local req,_ = limit:get(CC_TOKEN)
         if req then
             if req > CCcount then
                 log_record('CC_Attack',ngx.var.request_uri,"-","-")
                 if config_waf_enable == "on" then
-                    ngx.exit(403)
+                    ngx.exit(503)
                 end
             else
                 limit:incr(CC_TOKEN,1)
@@ -88,7 +88,7 @@ function cookie_attack_check()
         local USER_COOKIE = ngx.var.http_cookie
         if USER_COOKIE ~= nil then
             for _,rule in pairs(COOKIE_RULES) do
-                if rule ~="" and rulematch(USER_COOKIE,rule,"jo") then
+                if rule ~="" and rulematch(USER_COOKIE,rule,"ijo") then
                     log_record('Deny_Cookie',ngx.var.request_uri,"-",rule)
                     if config_waf_enable == "on" then
                         waf_output()
@@ -107,7 +107,7 @@ function url_attack_check()
         local URL_RULES = get_rule('url.rule')
         local REQ_URI = ngx.var.uri
         for _,rule in pairs(URL_RULES) do
-            if rule ~="" and ngx.re.find(REQ_URI,rule,"jo") then
+            if rule ~="" and ngx.re.find(REQ_URI,rule,"ijo") then
                 log_record('Deny_URL',REQ_URI,"-",rule)
                 if config_waf_enable == "on" then
                     waf_output()
@@ -123,6 +123,7 @@ end
 function url_args_attack_check()
     if config_url_args_check == "on" then
         local ARGS_RULES = get_rule('args.rule')
+	local ARGS_DATA = ""
         for _,rule in pairs(ARGS_RULES) do
             local REQ_ARGS = ngx.req.get_uri_args()
             for key, val in pairs(REQ_ARGS) do
@@ -131,7 +132,7 @@ function url_args_attack_check()
                 else
                     ARGS_DATA = val
                 end
-                if ARGS_DATA and type(ARGS_DATA) ~= "boolean" and rule ~="" and rulematch(unescape(ARGS_DATA),rule,"jo") then
+                if ARGS_DATA and type(ARGS_DATA) ~= "boolean" and rule ~="" and rulematch(unescape(ARGS_DATA),rule,"ijo") then
                     log_record('Deny_URL_Args',ngx.var.request_uri,"-",rule)
                     if config_waf_enable == "on" then
                         waf_output()
@@ -150,7 +151,7 @@ function user_agent_attack_check()
         local USER_AGENT = ngx.var.http_user_agent
         if USER_AGENT ~= nil then
             for _,rule in pairs(USER_AGENT_RULES) do
-                if rule ~="" and rulematch(USER_AGENT,rule,"jo") then
+                if rule ~="" and rulematch(USER_AGENT,rule,"ijo") then
                     log_record('Deny_USER_AGENT',ngx.var.request_uri,"-",rule)
                     if config_waf_enable == "on" then
                         waf_output()
@@ -181,7 +182,7 @@ function request_method_check()
 		local REQUSET_METHOD_RULES = get_rule('method.rule')  
                 local REQUEST_METHOD = get_request_method()
                 for _,rule in pairs(REQUSET_METHOD_RULES) do
-			if rule ~="" and rulematch(REQUEST_METHOD,rule,"jo") then
+			if rule ~="" and rulematch(REQUEST_METHOD,rule,"ijo") then
 			    return false
 			else
                 	    log_record('Deny_REQUEST_METHOD',REQUEST_METHOD,"-",rule)
