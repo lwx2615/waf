@@ -1,7 +1,7 @@
 \.(htaccess|bash_history)
-\.(bak|inc|old|mdb|sql|backup|java|class|tgz|gz|tar|zip)$
-(phpmyadmin|jmx-console|admin-console|jmxinvokerservlet)
+\.(bak|inc|old|mdb|sql|backup|java|class|tgz|gz|tar|zip|jsa|pl|cgi|jsp|cfm|asp|jsa|aspx|shtml|jhtml|asp|mwsl|dll|mwsl)$
 java\.lang
 (\.svn\/|\.git\/)
 (\\x1|\\x0)
+(phpmyadmin|jmx-console|admin-console|jmxinvokerservlet)
 /(attachments|upimg|images|css|uploadfiles|html|uploads|templets|static|template|data|inc|forumdata|upload|includes|cache|avatar)/(\w+).(php|jsp)
