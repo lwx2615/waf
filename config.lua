@@ -25,7 +25,7 @@ config_cookie_check = "on"
 --enable/disable cc filtering
 config_cc_check = "on"
 --cc rate the xxx of xxx seconds
-config_cc_rate = "6/30"
+config_cc_rate = "6/60"
 --enable/disable post filtering
 config_post_check = "on"
 --config waf output redirect/html

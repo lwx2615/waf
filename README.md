@@ -182,3 +182,29 @@ error while loading shared libraries: libluajit-5.1.so.2: cannot open shared obj
 [root@opsany openresty-1.17.8.2]# cd
 [root@opsany ~]# ln -s /usr/local/openresty-1.17.8.2/ /usr/local/openresty
 ```
+### OpenResty源码编译部署(ubuntu)
+
+1. 依赖包安装
+```
+apt-get install libpcre3 libpcre3-dev
+apt-get install openssl libssl-dev
+```
+
+2. 编译：
+
+```
+./configure --with-luajit --user=www --group=www --with-http_stub_status_module --with-http_ssl_module --with-http_v2_module
+```
+
+3. 安装：
+
+```
+gmake     
+gmake install
+```
+4. nginx配置文件中导入lua文件
+
+```
+lua_package_path "./?.lua;../../lualib/resty/?.lua;;";
+虽然openresty新版本已经内置lua库，如果不显式导入文件将导致rsty core找不到
+```
